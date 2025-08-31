@@ -5,7 +5,6 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage when app starts
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -13,7 +12,6 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Save user to localStorage whenever it changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
@@ -22,13 +20,11 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  // login function
   const login = (userData) => {
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
   };
 
-  // logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");

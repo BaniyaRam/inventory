@@ -5,8 +5,13 @@ import Navbar from "../components/Navbar.jsx";
 import { toast } from "react-toastify";
 
 export default function Cart() {
-  const { cartItems, removeFromCart, increaseQuantity, decreaseQuantity } =
-    useContext(CartContext);
+  const {
+    cartItems,
+    removeFromCart,
+    increaseQuantity,
+    decreaseQuantity,
+    clearCart,
+  } = useContext(CartContext);
 
   const [productToRemove, setProductToRemove] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -28,8 +33,9 @@ export default function Cart() {
   };
 
   const handlePay = () => {
-    toast.success(`Payment of $${grandTotal} successful!`);
+    toast.success(`Payment of $${grandTotal} successful! Thank you`);
     setShowPaymentModal(false);
+    clearCart();
   };
 
   if (cartItems.length === 0) {

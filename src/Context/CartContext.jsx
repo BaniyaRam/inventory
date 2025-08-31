@@ -1,14 +1,15 @@
 import { createContext, useState, useEffect } from "react";
 
-// Create and export the context
 export const CartContext = createContext();
 
-// Also provide a default export for the provider
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("cartItems");
     return savedCart ? JSON.parse(savedCart) : [];
   });
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -59,6 +60,7 @@ export function CartProvider({ children }) {
         removeFromCart,
         increaseQuantity,
         decreaseQuantity,
+        clearCart,
       }}
     >
       {children}
@@ -66,5 +68,4 @@ export function CartProvider({ children }) {
   );
 }
 
-// Default export for convenience
 export default CartProvider;

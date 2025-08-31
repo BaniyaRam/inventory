@@ -5,6 +5,7 @@ import { CartContext } from "../Context/CartContext";
 import Navbar from "../components/Navbar";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import QRCode from "react-qr-code";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -39,6 +40,19 @@ export default function ProductDetail() {
           <h1 className="mt-4 text-2xl font-bold">{product.name}</h1>
           <p className="mt-2 text-lg text-slate-300">${product.price}</p>
           <p className="mt-3 text-base text-slate-400">{product.description}</p>
+          {/* <div className="flex flex-col items-center justify-center mt-6">
+            <p className="mb-2 text-center text-slate-300">
+              Scan QR code to view this product:
+            </p>
+            <div className="p-2 rounded bg-slate-700">
+              <QRCode
+                value={`${window.location.origin}/products/${product.id}`}
+                size={128}
+                bgColor="#1e293b"
+                fgColor="#ffffff"
+              />
+            </div>
+          </div> */}
           <button
             onClick={handleAddToCart}
             className="w-full py-3 mt-5 text-white bg-blue-600 rounded hover:bg-blue-700"

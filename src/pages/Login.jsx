@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
-
 const loginSchema = z.object({
   username: z
     .string()
     .min(3, { message: "username must be at least 3 character" })
     .regex(/^[a-zA-Z0-9]+$/, {
-      message: "username must be alphanumeric (no spaces or symbols)",
+      message: "username must be alhanumeric (np spaces or symbols",
     }),
   password: z.string().min(5, {
     message: "password must be at least 5 characters",
@@ -25,24 +24,16 @@ export default function Login() {
     username: "Ram",
     password: "12345",
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const result = loginSchema.safeParse({ username, password });
     setError("");
     setSuccess("");
-
-    const result = loginSchema.safeParse({ username, password });
-
-    if (!result.success) {
-      const firstError = result.error.errors[0].message;
-      toast.error(firstError);
-      return;
-    }
-
     if (username === mockUser.username && password === mockUser.password) {
       toast.success("Login Successful");
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("user", JSON.stringify(mockUser));
+
       navigate("/home");
     } else {
       toast.error("invalid credentials ");
