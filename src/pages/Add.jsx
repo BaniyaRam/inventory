@@ -17,6 +17,11 @@ export default function Add({ onAddProduct }) {
       description,
       image: URL.createObjectURL(image),
     };
+    const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
+    const updatedProducts = [...existingProducts, newProduct];
+
+    // Save updated products to localStorage
+    localStorage.setItem("products", JSON.stringify(updatedProducts));
     onAddProduct(newProduct);
     toast.success("product added succesfully");
     setName("");

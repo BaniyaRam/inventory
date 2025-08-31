@@ -6,7 +6,8 @@ import { products as mockProducts } from "../data/mockproducts";
 
 export default function Products() {
   const { addToCart, cartItems } = useContext(CartContext);
-  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [displayProducts, setDisplayProducts] = useState([]);
   const [sortOption, setSortOption] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(
@@ -15,48 +16,63 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const productPerPage = 9;
   const navigate = useNavigate();
-  const [totalProducts, setTotalProducts] = useState(0);
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    toast.success("Added to Cart");
+    toast.success(`${product.name} Added to Cart`);
   };
 
   const handleSearch = () => {
     setSearchParams({ search: searchInput });
-    setCurrentPage(1);
   };
 
   useEffect(() => {
-    let filteredProducts = [...mockProducts];
+    const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
+
+    const processedSaved = savedProducts.map((p, i) => ({
+      ...p,
+      id: p.id || `saved-${i}-${Date.now()}`,
+    }));
+
+    const productMap = new Map();
+    [...mockProducts, ...processedSaved].forEach((p) => {
+      productMap.set(p.id, p);
+    });
+
+    let mergedProducts = Array.from(productMap.values());
+
     const searchQuery = searchParams.get("search")?.toLowerCase() || "";
     if (searchQuery) {
-      filteredProducts = filteredProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery)
+      mergedProducts = mergedProducts.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery)
       );
     }
 
-    if (sortOption === "price-asc") {
-      filteredProducts.sort((a, b) => a.price - b.price);
-    } else if (sortOption === "price-des") {
-      filteredProducts.sort((a, b) => b.price - a.price);
-    } else if (sortOption === "name-asc") {
-      filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortOption === "name-des") {
-      filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-    }
+    if (sortOption === "price-asc")
+      mergedProducts.sort((a, b) => a.price - b.price);
+    else if (sortOption === "price-des")
+      mergedProducts.sort((a, b) => b.price - a.price);
+    else if (sortOption === "name-asc")
+      mergedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    else if (sortOption === "name-des")
+      mergedProducts.sort((a, b) => b.name.localeCompare(a.name));
 
-    setTotalProducts(filteredProducts.length);
-    const paginatedProducts = filteredProducts.slice(
-      (currentPage - 1) * productPerPage,
-      currentPage * productPerPage
-    );
-    setProducts(paginatedProducts);
-  }, [sortOption, searchParams, currentPage]);
+    setAllProducts(mergedProducts);
+    setCurrentPage(1);
+  }, [searchParams, sortOption]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchParams]);
+    const totalPages = Math.ceil(allProducts.length / productPerPage);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+      return;
+    }
+    const start = (currentPage - 1) * productPerPage;
+    const end = start + productPerPage;
+    setDisplayProducts(allProducts.slice(start, end));
+  }, [allProducts, currentPage]);
+
+  const totalPages = Math.ceil(allProducts.length / productPerPage);
 
   return (
     <div className="min-h-screen p-6 text-white bg-slate-900">
@@ -104,13 +120,13 @@ export default function Products() {
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {products.length > 0 ? (
-          products.map((item) => (
+        {displayProducts.length > 0 ? (
+          displayProducts.map((item, index) => (
             <div
-              key={item.id}
+              key={item.id || index}
               className="flex flex-col overflow-hidden transition-transform transform rounded-md shadow-md bg-slate-800 hover:scale-105 hover:shadow-lg"
             >
-              <Link to={`/product/${item.id}`}>
+              <Link to={`/product/${item.id || index}`}>
                 <img
                   src={item.image}
                   alt={item.name}
@@ -148,15 +164,13 @@ export default function Products() {
           Previous
         </button>
         <span className="px-4 py-2">
-          {currentPage} / {Math.ceil(totalProducts / productPerPage)}
+          {currentPage} / {totalPages}
         </span>
         <button
           onClick={() =>
-            setCurrentPage((prev) =>
-              prev * productPerPage < totalProducts ? prev + 1 : prev
-            )
+            setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
           }
-          disabled={currentPage * productPerPage >= totalProducts}
+          disabled={currentPage === totalPages || totalPages === 0}
           className="px-4 py-2 bg-gray-600 rounded disabled:bg-gray-400"
         >
           Next

@@ -6,10 +6,10 @@ import Footer from "./components/footer";
 import Navbar from "./components/navbar";
 import Add from "./pages/Add";
 import Products from "./pages/Products";
-import ProductDetail from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import { useState } from "react";
 import { products as mockProducts } from "./data/mockproducts"; // make sure to import
+// import ProductDetail from "./pages/ProductDetails";
 
 export default function App() {
   const [products, setProducts] = useState(() => {
@@ -32,13 +32,14 @@ export default function App() {
         <Route path="/add" element={<Add onAddProduct={handleAddProduct} />} />
         <Route path="/products" element={<Products products={products} />} />
         <Route path="/home" element={<Home products={products} />} />
-        <Route
+        {/* <Route
           path="/products/:id"
           element={<ProductDetail products={products} />}
-        />
+        /> */}
         <Route path="/cart" element={<Cart />} />
       </Routes>
 
+      <Footer />
       <ToastContainer position="top-right" autoClose={2000} />
     </>
   );
