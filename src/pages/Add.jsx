@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function Add({ onAddProduct }) {
@@ -6,12 +7,22 @@ export default function Add({ onAddProduct }) {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || user.role !== "admin") {
+      toast.error("Access denied. Admins only.");
+      navigate("/"); // Redirect to home or login
+    }
+  }, [navigate]);
   const handleAddProduct = () => {
     if (!name || !price || !description || !image) {
       toast.error("please fill all fields and upload an image");
       return;
     }
     const newProduct = {
+      id: Date.now(),
       name,
       price: Number(price),
       description,
@@ -20,7 +31,6 @@ export default function Add({ onAddProduct }) {
     const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
     const updatedProducts = [...existingProducts, newProduct];
 
-    // Save updated products to localStorage
     localStorage.setItem("products", JSON.stringify(updatedProducts));
     onAddProduct(newProduct);
     toast.success("product added succesfully");

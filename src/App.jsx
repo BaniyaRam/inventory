@@ -1,19 +1,22 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Footer from "./components/footer";
 import Navbar from "./components/navbar";
 import Add from "./pages/Add";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
+import Admin from "./pages/Admin";
 import { useState } from "react";
-import { products as mockProducts } from "./data/mockproducts"; // make sure to import
-// import ProductDetail from "./pages/ProductDetails";
+import { products as mockProducts } from "./data/mockproducts";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ProductDetail from "./pages/ProductDetails";
 
 export default function App() {
   const [products, setProducts] = useState(() => {
-    const saved = localStorage.getItem("products"); // ✅ key must be a string
+    const saved = localStorage.getItem("products");
     return saved ? JSON.parse(saved) : mockProducts;
   });
 
@@ -27,20 +30,36 @@ export default function App() {
 
   return (
     <>
+      <ToastContainer position="top-right" autoClose={750} />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/add" element={<Add onAddProduct={handleAddProduct} />} />
+
+        <Route
+          path="/add"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <Add onAddProduct={handleAddProduct} />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/products" element={<Products products={products} />} />
         <Route path="/home" element={<Home products={products} />} />
-        {/* <Route
-          path="/products/:id"
-          element={<ProductDetail products={products} />}
-        /> */}
         <Route path="/cart" element={<Cart />} />
-      </Routes>
+        <Route
+          path="/product/:id"
+          element={<ProductDetail products={products} />}
+        />
 
-      <Footer />
-      <ToastContainer position="top-right" autoClose={2000} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <Admin products={products} setProducts={setProducts} />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </>
   );
 }

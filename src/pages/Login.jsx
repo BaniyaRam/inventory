@@ -20,21 +20,42 @@ export default function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
-  const mockUser = {
-    username: "Ram",
-    password: "12345",
-  };
+  const mockUser = [
+    {
+      username: "Ram",
+      password: "12345",
+      role: "user",
+    },
+    {
+      username: "admin",
+      password: "12345",
+      role: "admin",
+    },
+  ];
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = loginSchema.safeParse({ username, password });
     setError("");
     setSuccess("");
-    if (username === mockUser.username && password === mockUser.password) {
+    if (!result.success) {
+      const messages = result.error.errors.map((err) => err.message).join("\n");
+      toast.error(messages);
+      return;
+    }
+
+    const user = mockUser.find(
+      (u) => u.username === username && u.password === password
+    );
+    if (user) {
       toast.success("Login Successful");
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("user", JSON.stringify(mockUser));
+      localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/home");
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "user") {
+        navigate("/home");
+      }
     } else {
       toast.error("invalid credentials ");
     }

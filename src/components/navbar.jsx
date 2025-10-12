@@ -116,7 +116,10 @@ export default function Navbar() {
             >
               Search
             </button>
-            <button onClick={handleCart} className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+            <button
+              onClick={handleCart}
+              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+            >
               Cart ({cartItems.length})
             </button>
             <button
@@ -129,7 +132,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="p-6 text-white rounded shadow-lg bg-slate-800 w-80">

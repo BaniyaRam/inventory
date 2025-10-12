@@ -33,6 +33,15 @@ export default function Cart() {
   };
 
   const handlePay = () => {
+    const order = {
+      items: cartItems,
+      total: grandTotal,
+      date: new Date().toISOString(),
+    };
+
+    const previousOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    localStorage.setItem("orders", JSON.stringify([...previousOrders, order]));
+
     toast.success(`Payment of $${grandTotal} successful! Thank you`);
     setShowPaymentModal(false);
     clearCart();
