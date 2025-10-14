@@ -1,18 +1,19 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
+
+import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Footer from "./components/footer";
-import Navbar from "./components/navbar";
 import Add from "./pages/Add";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Admin from "./pages/Admin";
-import { useState } from "react";
-import { products as mockProducts } from "./data/mockproducts";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ProductDetail from "./pages/ProductDetails";
+import TransactionHistory from "./pages/TransactionHistory";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { products as mockProducts } from "./data/mockproducts";
+import { AuthProvider } from "./Context/AuthContext";
 
 export default function App() {
   const [products, setProducts] = useState(() => {
@@ -29,11 +30,10 @@ export default function App() {
   };
 
   return (
-    <>
-      <ToastContainer position="top-right" autoClose={750} />
+    <AuthProvider>
+      <ToastContainer position="top-right" autoClose={800} />
       <Routes>
         <Route path="/" element={<Login />} />
-
         <Route
           path="/add"
           element={
@@ -42,7 +42,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
         <Route path="/products" element={<Products products={products} />} />
         <Route path="/home" element={<Home products={products} />} />
         <Route path="/cart" element={<Cart />} />
@@ -50,7 +49,6 @@ export default function App() {
           path="/product/:id"
           element={<ProductDetail products={products} />}
         />
-
         <Route
           path="/admin"
           element={
@@ -59,7 +57,15 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/transactionHistory"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <TransactionHistory showAll={true} />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </>
+    </AuthProvider>
   );
 }

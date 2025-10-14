@@ -33,7 +33,18 @@ export default function Cart() {
   };
 
   const handlePay = () => {
+    // Get logged-in user from localStorage
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!loggedInUser) {
+      toast.error("Please login to place an order");
+      return;
+    }
+
     const order = {
+      id: Date.now(),
+      username: loggedInUser.username,
+      role: loggedInUser.role,
       items: cartItems,
       total: grandTotal,
       date: new Date().toISOString(),
@@ -42,7 +53,7 @@ export default function Cart() {
     const previousOrders = JSON.parse(localStorage.getItem("orders")) || [];
     localStorage.setItem("orders", JSON.stringify([...previousOrders, order]));
 
-    toast.success(`Payment of $${grandTotal} successful! Thank you`);
+    toast.success(`Payment of $${grandTotal.toFixed(2)} successful! Thank you`);
     setShowPaymentModal(false);
     clearCart();
   };
@@ -117,7 +128,9 @@ export default function Cart() {
         </div>
 
         <div className="flex items-center justify-between p-4 mt-6 rounded-md shadow-md bg-slate-800">
-          <h2 className="text-xl font-bold">Grand Total: ${grandTotal}</h2>
+          <h2 className="text-xl font-bold">
+            Grand Total: ${grandTotal.toFixed(2)}
+          </h2>
           <button
             onClick={() => setShowPaymentModal(true)}
             className="px-6 py-2 text-white bg-green-600 rounded hover:bg-green-700"
@@ -165,11 +178,13 @@ export default function Cart() {
                   <span>
                     {item.name} x {item.quantity}
                   </span>
-                  <span>${item.price * item.quantity}</span>
+                  <span>${(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
-            <h3 className="mb-4 font-bold text-right">Total: ${grandTotal}</h3>
+            <h3 className="mb-4 font-bold text-right">
+              Total: ${grandTotal.toFixed(2)}
+            </h3>
             <div className="flex justify-center gap-4">
               <button
                 onClick={handlePay}
