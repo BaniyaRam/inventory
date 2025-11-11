@@ -12,6 +12,7 @@ export default function Admin({ products, setProducts }) {
   const [user, setUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,15 +83,22 @@ export default function Admin({ products, setProducts }) {
   };
 
   const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const handleConfirmLogout = () => {
     localStorage.removeItem("user");
     toast.success("Logged out successfully");
     navigate("/");
   };
 
+  const handleCancelLogout = () => {
+    setShowLogoutModal(false);
+  };
+
   return (
     <div className="min-h-screen px-4 py-6 md:px-6 md:py-10 bg-gradient-to-br from-gray-900 to-gray-800">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col items-start justify-between gap-4 mb-6 md:flex-row md:items-center">
           <div className="w-full md:w-auto">
             <h1 className="text-2xl font-extrabold text-white md:text-4xl">
@@ -124,7 +132,6 @@ export default function Admin({ products, setProducts }) {
           </div>
         </div>
 
-        {/* Table Container */}
         <div className="overflow-x-auto bg-gray-900 rounded-lg shadow-lg">
           <table className="w-full text-xs text-left text-gray-200 border-collapse md:text-sm">
             <thead className="text-xs text-gray-400 uppercase bg-gray-800 md:text-sm">
@@ -141,7 +148,6 @@ export default function Admin({ products, setProducts }) {
                 </th>
               </tr>
             </thead>
-
             <tbody>
               {products.length === 0 ? (
                 <tr>
@@ -272,7 +278,6 @@ export default function Admin({ products, setProducts }) {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
           <div className="w-full max-w-sm p-6 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl md:p-8">
@@ -292,6 +297,33 @@ export default function Admin({ products, setProducts }) {
               </button>
               <button
                 onClick={handleCancelDelete}
+                className="flex-1 px-4 py-3 text-sm font-semibold text-white transition-colors bg-gray-600 rounded-md md:text-base hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="w-full max-w-sm p-6 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl md:p-8">
+            <h2 className="mb-4 text-xl font-bold text-white md:text-2xl">
+              Logout?
+            </h2>
+            <p className="mb-8 text-sm text-gray-300 md:text-base">
+              Are you sure you want to log out from the admin panel?
+            </p>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <button
+                onClick={handleConfirmLogout}
+                className="flex-1 px-4 py-3 text-sm font-semibold text-white transition-colors bg-red-600 rounded-md md:text-base hover:bg-red-700"
+              >
+                Yes, Logout
+              </button>
+              <button
+                onClick={handleCancelLogout}
                 className="flex-1 px-4 py-3 text-sm font-semibold text-white transition-colors bg-gray-600 rounded-md md:text-base hover:bg-gray-700"
               >
                 Cancel

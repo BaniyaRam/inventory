@@ -28,12 +28,12 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 px-4 py-3 shadow-md bg-slate-900 md:px-8">
-      <div className="flex items-center justify-between w-full">
+      <div className="relative flex items-center justify-between w-full">
         <Link to="/home" className="self-center text-2xl font-bold text-white">
           WEBSITE
         </Link>
 
-        <div className="items-center hidden gap-6 md:flex">
+        <div className="relative z-20 items-center hidden gap-6 md:flex">
           <ul className="flex gap-6 font-medium text-white">
             <li>
               <Link to="/home" className="hover:text-blue-300">
@@ -56,14 +56,15 @@ export default function Navbar() {
               </Link>
             </li>
           </ul>
-          <div className="flex items-center gap-4">
+
+          <div className="relative z-20 flex items-center gap-4">
             <input
               type="text"
               placeholder="Search"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="w-40 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-40 px-4 py-2 text-black bg-white border border-gray-300 rounded-md pointer-events-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
               onClick={handleSearch}
@@ -77,7 +78,7 @@ export default function Navbar() {
             >
               <HiShoppingCart className="w-6 h-6" />
               {cartItems.length > 0 && (
-                <span className="absolute top-0 right-0 px-2 py-1 -mt-1 -mr-1 text-xs font-bold text-white bg-red-600 rounded-full">
+                <span className="absolute top-0 right-0 z-40 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
                   {cartItems.length}
                 </span>
               )}
@@ -92,7 +93,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="self-center text-2xl text-white md:hidden"
+          className="relative z-20 self-center text-2xl text-white md:hidden"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <HiX /> : <HiMenu />}
@@ -100,7 +101,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="flex flex-col gap-4 mt-4 text-center md:hidden">
+        <div className="relative z-30 flex flex-col gap-4 p-4 mt-4 text-center rounded shadow md:hidden bg-slate-900">
           <ul className="flex flex-col gap-2 font-medium text-white">
             <li onClick={() => setMenuOpen(false)}>
               <Link to="/home">Home</Link>
@@ -121,7 +122,7 @@ export default function Navbar() {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-4 py-2 text-black bg-white border border-gray-300 rounded-md pointer-events-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleSearch}
@@ -135,7 +136,7 @@ export default function Navbar() {
           >
             <HiShoppingCart className="inline-block w-6 h-6" />
             {cartItems.length > 0 && (
-              <span className="absolute top-0 right-0 px-2 py-1 -mt-1 -mr-1 text-xs font-bold text-white bg-red-600 rounded-full">
+              <span className="absolute top-0 right-0 z-50 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
                 {cartItems.length}
               </span>
             )}
