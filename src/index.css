@@ -1,3 +1,10 @@
+/* Make html, body, and root take full height */
+html,
+body,
+#root {
+  @apply h-full p-0 m-0;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

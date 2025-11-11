@@ -1,0 +1,5 @@
+- product detail error = done
+- cart logo =done
+- enter to search=done
+- order to save in localstorage=done
+- list and grid view= done
