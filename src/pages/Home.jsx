@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import Footer from "../components/footer";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import { products } from "../data/mockproducts";
 import { Link } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
