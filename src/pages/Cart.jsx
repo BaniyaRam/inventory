@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../Context/CartContext.jsx";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar.jsx";
+import Navbar from "../components/navbar.jsx";
 import { toast } from "react-toastify";
 
 export default function Cart() {
